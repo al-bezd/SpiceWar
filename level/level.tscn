@@ -1,0 +1,68 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://hero/hero.tscn" type="PackedScene" id=1]
+[ext_resource path="res://level/level.gd" type="Script" id=2]
+[ext_resource path="res://enemy/enemy1.tscn" type="PackedScene" id=3]
+[ext_resource path="res://level/images/space.jpg" type="Texture" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 143.871, 10 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 10, 350.093 )
+
+[node name="Node2D" type="Node2D" groups=[
+"enemys",
+]]
+script = ExtResource( 2 )
+
+[node name="enemy1" parent="." instance=ExtResource( 3 )]
+position = Vector2( 134.837, -157.791 )
+
+[node name="ship" parent="." instance=ExtResource( 1 )]
+position = Vector2( 138, 479 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 142.744, 522.436 )
+shape = SubResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D"]
+margin_top = 512.0
+margin_right = 288.0
+margin_bottom = 533.0
+color = Color( 1, 1, 1, 0.109804 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera2D" type="Camera2D" parent="StaticBody2D"]
+anchor_mode = 0
+current = true
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( -8.32446, 184.327 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 297.302, 183.138 )
+shape = SubResource( 2 )
+
+[node name="Label" type="Label" parent="StaticBody2D"]
+margin_right = 61.0
+margin_bottom = 25.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="space" type="Sprite" parent="."]
+show_behind_parent = true
+position = Vector2( 140.493, 28.8858 )
+rotation = 1.5708
+texture = ExtResource( 4 )
+
+[node name="TimerRespEnemy" type="Timer" parent="."]
+wait_time = 5.0
+
+[connection signal="timeout" from="TimerRespEnemy" to="." method="_on_TimerRespEnemy_timeout"]
