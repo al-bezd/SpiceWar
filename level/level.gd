@@ -31,6 +31,8 @@ func _process(delta):
 	$Camera2D/ParallaxBackground.scroll_offset.y-=20*delta
 	if $ship!=null:
 		$Camera2D/Label.text = str($ship.health)
+	else:
+		$Camera2D/Label.text = ''
 	$Camera2D/HBoxContainer/Asteroids.text = "x %s"%asteroid
 	print(str(asteroid))
 	

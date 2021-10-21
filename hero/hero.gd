@@ -45,6 +45,8 @@ func _physics_process(delta):
 			#velocity.y =  WALK_SPEED
 		else:
 			velocity.y = 0
+	else:
+		position.y = clamp(position.y+WALK_SPEED*delta,0,16*32)
 
 		#move_and_slide(velocity, Vector2(0, -1),false, 4, PI/4, false)
 	
