@@ -25,35 +25,29 @@ func _ready():
 
 
 func _physics_process(delta):
+	if not is_dead:
 	#velocity.y += delta * GRAVITY
 
-	if Input.is_action_pressed("ui_left") :
-		position.x = clamp(position.x-WALK_SPEED*delta,0,9*32)
-		#velocity.x = -WALK_SPEED
-	elif Input.is_action_pressed("ui_right"):
-		position.x = clamp(position.x+WALK_SPEED*delta,0,9*32)
-		#velocity.x =  WALK_SPEED
-	else:
-		velocity.x = 0
-	
-	if Input.is_action_pressed("ui_up"):
-		position.y = clamp(position.y-WALK_SPEED*delta,0,16*32)
-		#velocity.y = -WALK_SPEED
-	elif Input.is_action_pressed("ui_down"):
-		position.y = clamp(position.y+WALK_SPEED*delta,0,16*32)
-		#velocity.y =  WALK_SPEED
-	else:
-		velocity.y = 0
+		if Input.is_action_pressed("ui_left") :
+			position.x = clamp(position.x-WALK_SPEED*delta,0,9*32)
+			#velocity.x = -WALK_SPEED
+		elif Input.is_action_pressed("ui_right"):
+			position.x = clamp(position.x+WALK_SPEED*delta,0,9*32)
+			#velocity.x =  WALK_SPEED
+		else:
+			velocity.x = 0
 		
-	
-	
+		if Input.is_action_pressed("ui_up"):
+			position.y = clamp(position.y-WALK_SPEED*delta,0,16*32)
+			#velocity.y = -WALK_SPEED
+		elif Input.is_action_pressed("ui_down"):
+			position.y = clamp(position.y+WALK_SPEED*delta,0,16*32)
+			#velocity.y =  WALK_SPEED
+		else:
+			velocity.y = 0
 
-	# We don't need to multiply velocity by delta because "move_and_slide" already takes delta time into account.
-
-	# The second parameter of "move_and_slide" is the normal pointing up.
-	# In the case of a 2D platformer, in Godot, upward is negative y, which translates to -1 as a normal.
-	move_and_slide(velocity, Vector2(0, -1),false, 4, PI/4, false)
-	print(position)
+		#move_and_slide(velocity, Vector2(0, -1),false, 4, PI/4, false)
+	
 
 func shot():
 	if not is_dead:

@@ -29,7 +29,8 @@ func _ready():
 
 func _process(delta):
 	$Camera2D/ParallaxBackground.scroll_offset.y-=20*delta
-	$Camera2D/Label.text = str($ship.health)
+	if $ship!=null:
+		$Camera2D/Label.text = str($ship.health)
 	$Camera2D/HBoxContainer/Asteroids.text = "x %s"%asteroid
 	print(str(asteroid))
 	
@@ -83,5 +84,10 @@ func _on_TweenHitOnHero_tween_completed(object, key):
 	#$Camera2D/Label.set("custom_colors/font_color", Color.white)
 
 func game_over():
-	queue_free()
-	get_tree().change_scene("res://level/level.tscn")
+	
+	$Camera2D/GameOverMenu.text = 'START'
+	$TweenGameOverMenuStart.interpolate_property($Camera2D/GameOverMenu,'rest_position',
+	Vector2(-100,-32*8),Vector2(32*4,-32*8),1,Tween.TRANS_ELASTIC,Tween.EASE_IN_OUT)
+	$TweenGameOverMenuStart.start()
+	#queue_free()
+	#get_tree().change_scene("res://level/level.tscn")
