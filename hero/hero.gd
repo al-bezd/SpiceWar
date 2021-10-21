@@ -4,8 +4,13 @@ const WALK_SPEED = 200
 
 onready var BULLET = preload("res://hero/ammo/ammo.tscn")
 
-var health = 1000
+var health = 200
 var velocity = Vector2()
+var hitLabels = []
+var is_dead=false
+
+signal hit
+signal death
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -22,20 +27,25 @@ func _ready():
 func _physics_process(delta):
 	#velocity.y += delta * GRAVITY
 
-	if Input.is_action_pressed("ui_left"):
-		velocity.x = -WALK_SPEED
+	if Input.is_action_pressed("ui_left") :
+		position.x = clamp(position.x-WALK_SPEED*delta,0,9*32)
+		#velocity.x = -WALK_SPEED
 	elif Input.is_action_pressed("ui_right"):
-		velocity.x =  WALK_SPEED
+		position.x = clamp(position.x+WALK_SPEED*delta,0,9*32)
+		#velocity.x =  WALK_SPEED
 	else:
 		velocity.x = 0
 	
 	if Input.is_action_pressed("ui_up"):
-		velocity.y = -WALK_SPEED
+		position.y = clamp(position.y-WALK_SPEED*delta,0,16*32)
+		#velocity.y = -WALK_SPEED
 	elif Input.is_action_pressed("ui_down"):
-		velocity.y =  WALK_SPEED
+		position.y = clamp(position.y+WALK_SPEED*delta,0,16*32)
+		#velocity.y =  WALK_SPEED
 	else:
 		velocity.y = 0
 		
+	
 	
 
 	# We don't need to multiply velocity by delta because "move_and_slide" already takes delta time into account.
@@ -43,19 +53,38 @@ func _physics_process(delta):
 	# The second parameter of "move_and_slide" is the normal pointing up.
 	# In the case of a 2D platformer, in Godot, upward is negative y, which translates to -1 as a normal.
 	move_and_slide(velocity, Vector2(0, -1),false, 4, PI/4, false)
+	print(position)
 
 func shot():
-	var bullet =  BULLET.instance()
-	get_node("..").add_child(bullet)
-	bullet.global_position = $Position2D.global_position
+	if not is_dead:
+		var bullet =  BULLET.instance()
+		get_node("..").add_child(bullet)
+		bullet.global_position = $gunPosition.global_position
 	
 
-func hint(damage):
-	modulate = Color.red
-	$TimerHit.start()
-	health-=damage
-	print(health)
+func hit(damage):
+	if not is_dead:
+		modulate = Color.red
+		$TimerHit.start()
+		health-=damage
+		print(health)
+		show_hit_label(damage)
+		if health<=0:
+			is_dead=true
+			modulate = Color.white
+			$AnimatedSprite.play()
+			$red_ship.hide()
+			
+			
 
+	
+func show_hit_label(damage):
+	var hitLabel = preload("res://modules/DamageLabel.tscn").instance()
+	hitLabel.damage = damage
+	hitLabel.rect_position = position+Vector2(-16,-100)
+	get_node("..").add_child(hitLabel)
+	emit_signal("hit")
+	
 
 func _on_Timer_timeout():
 	shot()
@@ -65,10 +94,23 @@ func _on_Timer_timeout():
 func _on_Area2D_body_entered(body):
 	print(body.name)
 	if body.is_in_group('enemys'):
-		hint(body.damage)
+		if not body.is_dead:
+			hit(body.damage)
 		
 
 
 func _on_TimerHit_timeout():
 	modulate = Color.white
 
+
+
+func _on_KinematicBody2D_death():
+	is_dead=true
+	$AnimatedSprite.play()
+	$red_ship.hide()
+	
+
+
+func _on_AnimatedSprite_animation_finished():
+	emit_signal('death')
+	queue_free()

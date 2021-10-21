@@ -1,68 +1,86 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://hero/hero.tscn" type="PackedScene" id=1]
 [ext_resource path="res://level/level.gd" type="Script" id=2]
-[ext_resource path="res://enemy/enemy1.tscn" type="PackedScene" id=3]
 [ext_resource path="res://level/images/space.jpg" type="Texture" id=4]
+[ext_resource path="res://assets/fonts/Begok v15_2015___free.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://enemy/images/stone.png" type="Texture" id=6]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 143.871, 10 )
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 5 )
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 10, 350.093 )
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 5 )
 
 [node name="Node2D" type="Node2D" groups=[
 "enemys",
 ]]
 script = ExtResource( 2 )
 
-[node name="enemy1" parent="." instance=ExtResource( 3 )]
-position = Vector2( 134.837, -157.791 )
-
 [node name="ship" parent="." instance=ExtResource( 1 )]
 position = Vector2( 138, 479 )
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 142.744, 522.436 )
-shape = SubResource( 1 )
-
-[node name="ColorRect" type="ColorRect" parent="StaticBody2D"]
-margin_top = 512.0
-margin_right = 288.0
-margin_bottom = 533.0
-color = Color( 1, 1, 1, 0.109804 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Camera2D" type="Camera2D" parent="StaticBody2D"]
-anchor_mode = 0
-current = true
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( -8.32446, 184.327 )
-shape = SubResource( 2 )
-
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 297.302, 183.138 )
-shape = SubResource( 2 )
-
-[node name="Label" type="Label" parent="StaticBody2D"]
-margin_right = 61.0
-margin_bottom = 25.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="space" type="Sprite" parent="."]
-show_behind_parent = true
-position = Vector2( 140.493, 28.8858 )
-rotation = 1.5708
-texture = ExtResource( 4 )
 
 [node name="TimerRespEnemy" type="Timer" parent="."]
 wait_time = 5.0
 
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+
+[node name="Label" type="Label" parent="Camera2D"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 61.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TweenHitOnHero" type="Tween" parent="Camera2D"]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Camera2D"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 220.0
+margin_top = 16.0
+margin_right = 254.0
+margin_bottom = 34.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Asteroids" type="Label" parent="Camera2D/HBoxContainer"]
+margin_right = 34.0
+margin_bottom = 18.0
+custom_fonts/font = SubResource( 2 )
+text = "x 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="stone" type="Sprite" parent="Camera2D/HBoxContainer"]
+position = Vector2( -12.4708, 9.03587 )
+scale = Vector2( 0.1, 0.1 )
+texture = ExtResource( 6 )
+
+[node name="TweenAsteroids" type="Tween" parent="Camera2D/HBoxContainer"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="Camera2D"]
+rotation = -3.14159
+transform = Transform2D( -1, -1.50996e-07, 1.50996e-07, -1, 0, 0 )
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Camera2D/ParallaxBackground"]
+motion_mirroring = Vector2( 0, 1000 )
+
+[node name="space" type="Sprite" parent="Camera2D/ParallaxBackground/ParallaxLayer"]
+show_behind_parent = true
+rotation = 1.5708
+texture = ExtResource( 4 )
+
 [connection signal="timeout" from="TimerRespEnemy" to="." method="_on_TimerRespEnemy_timeout"]
+[connection signal="tween_completed" from="Camera2D/TweenHitOnHero" to="." method="_on_TweenHitOnHero_tween_completed"]
+[connection signal="tween_completed" from="Camera2D/HBoxContainer/TweenAsteroids" to="." method="_on_TweenAsteroids_tween_completed"]

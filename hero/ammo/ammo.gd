@@ -32,3 +32,7 @@ func _on_Timer_timeout():
 
 func death():
 	queue_free()
+
+
+func _on_VisibilityNotifier2D_screen_exited():
+	death() # Replace with function body.

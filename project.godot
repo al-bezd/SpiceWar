@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Label",
+"class": "DamageLabel",
+"language": "GDScript",
+"path": "res://modules/DamageLabel.gd"
+} ]
+_global_script_class_icons={
+"DamageLabel": ""
+}
+
 [application]
 
 config/name="SpiceWar"
@@ -19,6 +29,8 @@ config/icon="res://icon.png"
 window/size/width=288
 window/size/height=512
 window/handheld/orientation="portrait"
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
 
 [physics]
 

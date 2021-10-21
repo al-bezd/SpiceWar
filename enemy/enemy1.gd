@@ -4,9 +4,11 @@ var rng = RandomNumberGenerator.new()
 var health = 200
 var damage 
 var speed
+var is_dead = false
 
 signal hit
-signal is_dead
+signal die
+signal add_point
 
 func _ready():
 	rng.randomize()
@@ -19,22 +21,19 @@ func _physics_process(delta):
 	
 	
 func hit(damage):
-	modulate = Color.red
-	$TimerHit.start()
-	health-=damage
-	if health<=0:
-		death()
+	if not is_dead:
+		modulate = Color.red
+		$TimerHit.start()
+		health-=damage
+		if health<=0:
+			death()
 
 func death():
-	
-	#$CollisionShape2D/AnimatedSprite.show()
-	sleeping=true
+	is_dead  = true
+	set_collision_layer_bit(0, false) 
+	set_collision_mask_bit(0, false) 
 	$AnimatedSprite.play()
-	
-	#queue_free()
-
-
-
+	emit_signal("add_point")
 
 
 func _on_AnimatedSprite_frame_changed():
@@ -43,6 +42,7 @@ func _on_AnimatedSprite_frame_changed():
 
 
 func _on_AnimatedSprite_animation_finished():
+	#emit_signal("die")
 	queue_free()
 
 
@@ -52,9 +52,12 @@ func _on_enemy1_body_entered(body):
 
 
 func _on_VisibilityNotifier2D_screen_exited():
-	death()
-	emit_signal("is_dead")
+	queue_free()
 
 
 func _on_TimerHit_timeout():
 	modulate = Color.white
+
+
+func _on_TweenDeath_tween_completed(object, key):
+	pass # Replace with function body.
